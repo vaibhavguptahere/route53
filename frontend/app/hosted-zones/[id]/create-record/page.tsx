@@ -84,7 +84,7 @@ export default function CreateRecord({ params }: { params: Promise<{ id: string 
     setIsSubmitting(true);
     try {
       // Create a single record according to the backend schema
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/hosted-zones/${id}/records`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/hosted-zones/${id}/records/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
