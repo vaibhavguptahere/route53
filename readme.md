@@ -18,7 +18,7 @@ infrastructure.
 
 ## Live Demo
 
-**Hosted application:** `https`
+**Hosted application:** `https://route53-psi.vercel.app/signin`
 
 ------------------------------------------------------------------------
 
