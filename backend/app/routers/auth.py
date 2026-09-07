@@ -55,11 +55,13 @@ def login(
     db.add(db_session)
     db.commit()
 
+    # Create a secure cross-site session cookie
     response.set_cookie(
         key="route53_session",
         value=session_token,
         httponly=True,
-        samesite="lax",
+        secure=True,
+        samesite="none",
     )
 
     return user
@@ -103,6 +105,7 @@ def get_current_user(
         )
 
     return user
+
 
 @router.post("/logout")
 def logout(
