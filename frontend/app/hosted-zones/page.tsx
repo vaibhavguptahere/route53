@@ -36,7 +36,7 @@ export default function HostedZonesPage() {
         const zonesWithCounts = await Promise.all(
           (data.items || []).map(async (zone: any) => {
             try {
-              const recRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/hosted-zones/${zone.id}/records`, { credentials: 'include' });
+              const recRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/hosted-zones/${zone.id}/records/`, { credentials: 'include' });
               if (recRes.ok) {
                 const recData = await recRes.json();
                 return { ...zone, record_count: recData.total !== undefined ? recData.total : (recData.items?.length || 0) };
@@ -267,26 +267,26 @@ function DeleteZoneModal({ zone, onClose, onSuccess }: { zone: HostedZone; onClo
           <p className="text-white text-[14px] mb-6">
             Delete the hosted zone permanently? This action cannot be undone. Your domain might become unavailable on the internet.
           </p>
-          
+
           <div className="border-t border-[#2c384a] my-6"></div>
 
           <p className="text-white text-[14px] font-bold mb-2">
             To confirm that you want to delete the hosted zone, enter <span className="italic font-bold">delete</span> in the field.
           </p>
-          <input 
-            type="text" 
+          <input
+            type="text"
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
-            placeholder="delete" 
-            className="w-full bg-[#161d27] border border-[#545b64] focus:border-[#3ea1fc] focus:outline-none rounded p-2 text-white text-[14px] mb-2 font-italic" 
+            placeholder="delete"
+            className="w-full bg-[#161d27] border border-[#545b64] focus:border-[#3ea1fc] focus:outline-none rounded p-2 text-white text-[14px] mb-2 font-italic"
           />
           {error && <p className="text-[#d91515] text-[13px] mb-4">{error}</p>}
         </div>
         <div className="flex justify-end gap-4 p-4 bg-[#161d27] border-t border-[#2c384a] rounded-b">
           <button onClick={onClose} className="text-[#3ea1fc] hover:underline font-bold text-[14px] px-4">Cancel</button>
-          <button 
-            onClick={handleDelete} 
-            disabled={loading || confirmText.toLowerCase() !== 'delete'} 
+          <button
+            onClick={handleDelete}
+            disabled={loading || confirmText.toLowerCase() !== 'delete'}
             className="bg-[#2c384a] text-white hover:bg-[#3e4d62] font-bold py-1.5 px-4 rounded-full text-[14px] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Delete
