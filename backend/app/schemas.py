@@ -3,6 +3,12 @@ from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
 
+
+class HostedZoneType(str, Enum):
+    PUBLIC = "public"
+    PRIVATE = "private"
+
+
 class RecordType(str, Enum):
     A = "A"
     AAAA = "AAAA"
@@ -16,15 +22,16 @@ class RecordType(str, Enum):
 
 
 # Hosted Zone Table
+
 class HostedZoneCreate(BaseModel):
-    name: str
-    type: str = "public"
+    name: str = Field(min_length=1)
+    type: HostedZoneType = HostedZoneType.PUBLIC
     comment: str | None = None
 
 
 class HostedZoneUpdate(BaseModel):
-    name: str
-    type: str
+    name: str = Field(min_length=1)
+    type: HostedZoneType
     comment: str | None = None
 
 
@@ -38,6 +45,7 @@ class HostedZoneResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class HostedZoneListResponse(BaseModel):
     items: list[HostedZoneResponse]
     total: int
@@ -47,18 +55,19 @@ class HostedZoneListResponse(BaseModel):
 
 
 # DNS Record Table
+
 class DNSRecordCreate(BaseModel):
-    name: str
+    name: str = Field(min_length=1)
     type: RecordType
     ttl: int = Field(default=300, ge=1)
-    value: str
+    value: str = Field(min_length=1)
 
 
 class DNSRecordUpdate(BaseModel):
-    name: str
+    name: str = Field(min_length=1)
     type: RecordType
     ttl: int = Field(ge=1)
-    value: str
+    value: str = Field(min_length=1)
 
 
 class DNSRecordResponse(BaseModel):
@@ -80,3 +89,18 @@ class DNSRecordListResponse(BaseModel):
     page: int
     page_size: int
     total_pages: int
+
+
+# Authentication
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)

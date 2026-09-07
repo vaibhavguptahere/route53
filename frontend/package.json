@@ -9,6 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@cloudscape-design/design-tokens": "^3.0.111",
+    "@cloudscape-design/global-styles": "^1.0.68",
+    "lucide-react": "^1.42.0",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8"

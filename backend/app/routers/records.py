@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..database import get_db
+from ..dependencies import get_current_user
 from ..models import DNSRecord, HostedZone
 from ..schemas import (
     DNSRecordCreate,
@@ -12,9 +13,11 @@ from ..schemas import (
     DNSRecordUpdate,
 )
 
+
 router = APIRouter(
     prefix="/api/hosted-zones/{zone_id}/records",
     tags=["DNS Records"],
+    dependencies=[Depends(get_current_user)],
 )
 
 
@@ -121,8 +124,8 @@ def create_record(
 
     if not zone:
         raise HTTPException(
-        status_code=404,
-        detail="Hosted zone not found",
+            status_code=404,
+            detail="Hosted zone not found",
         )
 
     record = DNSRecord(

@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..database import get_db
+from ..dependencies import get_current_user
 from ..models import HostedZone
 from ..schemas import (
     HostedZoneCreate,
@@ -12,9 +13,11 @@ from ..schemas import (
     HostedZoneUpdate,
 )
 
+
 router = APIRouter(
     prefix="/api/hosted-zones",
     tags=["Hosted Zones"],
+    dependencies=[Depends(get_current_user)],
 )
 
 
@@ -83,6 +86,18 @@ def create_hosted_zone(
     zone_data: HostedZoneCreate,
     db: Session = Depends(get_db),
 ):
+    existing_zone = (
+        db.query(HostedZone)
+        .filter(HostedZone.name == zone_data.name)
+        .first()
+    )
+
+    if existing_zone:
+        raise HTTPException(
+            status_code=400,
+            detail="A hosted zone with this name already exists",
+        )
+
     zone = HostedZone(
         name=zone_data.name,
         type=zone_data.type,
@@ -115,6 +130,21 @@ def update_hosted_zone(
         raise HTTPException(
             status_code=404,
             detail="Hosted zone not found",
+        )
+
+    existing_zone = (
+        db.query(HostedZone)
+        .filter(
+            HostedZone.name == zone_data.name,
+            HostedZone.id != zone_id,
+        )
+        .first()
+    )
+
+    if existing_zone:
+        raise HTTPException(
+            status_code=400,
+            detail="A hosted zone with this name already exists",
         )
 
     zone.name = zone_data.name
